@@ -208,55 +208,26 @@ module.exports = exports = function(webot){
 
 
    webot.waitRule('wait_class', function(info) {
-    // var courseName='lol';
-     // var tmp =true;
-  //    var options = {
-  //       host: 'api.uwaterloo.ca',
-  //       path: '/v2/courses/CS/486/examschedule.json?key=b15ec88836fc09518c7407bb3951193c'
-  //     };
-  //     function processCourseName(name){
-  //       console.log('do something with', name);
-  //     }
-  //     var callback =function(response) {
-  //         var str = '';
-  // //another chunk of data has been recieved, so append it to `str`
-  //         response.on('data', function (chunk) {
-  //         str += chunk;
-  //       });
-  //         response.on('end',function(){
-  //       // console.log(str);
-  //        // return "kkk";
-  //        var data = JSON.parse(str);
-  //        console.log(data['data']['course']);
-  //        courseName = courseName+data['data']['course'];
-  //        console.log("finished");
-  //        processCourseName(courseName);
-  //         // tmp=false;
-  //        // return "lolllll";
-  //        // return "nide ke shi "+ courseName;
-  //     });
-  //   }
+        function isEmptyObject(obj) {
+      return !Object.keys(obj).length;
+  }
      var courseName = info.text;
     console.log(courseName);
     var subject = courseName.match(/[^0-9]*/)[0];
     var courseNumber = courseName.match(/\d+/)[0];
-    console.log(subject);
-    console.log(courseNumber);
+    // console.log(subject);
+    // console.log(courseNumber);
     var url = "http://api.uwaterloo.ca/v2/courses/"+subject+"/"+courseNumber+"/"+"examschedule.json?key=b15ec88836fc09518c7407bb3951193c"
-    console.log(url);
+    // console.log(url);
      var req = httpsync.get(url);
     var response= req.end();
     var data = JSON.parse(response['data'].toString('utf-8'))['data'];
-    // var data = JSON.parse(txt)['data'];
-    var course = data['course'];
-    data = data['sections'];
     // console.log(data);
-    // data = JSON.parse(data);
-    // console.log(data[0]);
-    data = data[0];
-    if(data == null){
-      return "没有你想要的课";
-    }
+    var output = '';
+    if(!isEmptyObject(data)){
+    var course = data['course'];
+    data = data['sections'][0];
+
     var section = data['section'];
     var day = data['day'];
     var date = data['date'];
@@ -264,6 +235,7 @@ module.exports = exports = function(webot){
     var end = data['end_time'];
     var location = data['location'];
     var notes = data['notes'];
+    output = output+ "你的科目 "+course + " section:"+section+" 将于 " + day +" " + date+" 在 "+location+" 进行, 开始时间 "+ start+ " 结束时间 "+end ;
     // while(tmp){
     // }
     // var req = httpsync.get({
@@ -276,8 +248,12 @@ module.exports = exports = function(webot){
     // req.end();
     // console.log(res);
     // console.log("i am finshed");
+  }
+  else{
+    output = "查无此课, 我的朋友";
+  }
 
-     return "你的科目 "+course + " 将于 " + day +" " + date+" 在 "+location+" 进行, 开始时间 "+ start+ "结束时间 "+end ;
+     return output;
   });
   webot.set('exam schedule',{
     description:'发送: exam, 查询你的考试时间地点',
