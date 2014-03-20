@@ -29,7 +29,7 @@ module.exports = exports = function(webot){
     handler: function(info){
       var reply = {
         title: '感谢你关注WeLoo公众平台',
-        pic: 'http://imgur.com/ySk4ojW',
+        pic: 'http://i.imgur.com/ySk4ojW.jpg',
         url: 'https://github.com/node-webot',
         description: [
           '你可以试试以下指令:',
