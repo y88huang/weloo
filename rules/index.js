@@ -28,12 +28,12 @@ module.exports = exports = function(webot){
     },
     handler: function(info){
       var reply = {
-        title: '感谢你收听webot机器人',
+        title: '感谢你关注WeLoo公众平台',
         pic: 'https://raw.github.com/node-webot/webot-example/master/qrcode.jpg',
         url: 'https://github.com/node-webot/webot-example',
         description: [
           '你可以试试以下指令:',
-            'game : 玩玩猜数字的游戏吧',
+            // 'game : 玩玩猜数字的游戏吧',
             'exam : 查看exam schedule',
             's+空格+关键词 : 我会帮你百度搜索喔',
             's+空格+nde : 可以试试我的纠错能力',
@@ -250,10 +250,13 @@ module.exports = exports = function(webot){
     // var data = JSON.parse(txt)['data'];
     var course = data['course'];
     data = data['sections'];
-    console.log(data);
+    // console.log(data);
     // data = JSON.parse(data);
-    console.log(data[0]);
+    // console.log(data[0]);
     data = data[0];
+    if(data == null){
+      return "没有你想要的课";
+    }
     var section = data['section'];
     var day = data['day'];
     var date = data['date'];
@@ -278,7 +281,7 @@ module.exports = exports = function(webot){
   });
   webot.set('exam schedule',{
     description:'发送: exam, 查询你的考试时间地点',
-    pattern: /(?:exam|考？试)\s*(\d*)/,
+    pattern: /(?:exam|考？试|Exam)\s*(\d*)/,
     handler: function(info){
       var num = 3;
       info.session.course = num;
