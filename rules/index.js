@@ -11,6 +11,8 @@ var geo2loc = require('../lib/support').geo2loc;
 
 var package_info = require('../package.json');
 
+// var http = require('http');
+var httpsync = require('httpsync');
 /**
  * 初始化路由规则
  */
@@ -32,6 +34,7 @@ module.exports = exports = function(webot){
         description: [
           '你可以试试以下指令:',
             'game : 玩玩猜数字的游戏吧',
+            'exam : 查看exam schedule',
             's+空格+关键词 : 我会帮你百度搜索喔',
             's+空格+nde : 可以试试我的纠错能力',
             '使用「位置」发送你的经纬度',
@@ -198,6 +201,91 @@ module.exports = exports = function(webot){
     }
   });
 
+
+     
+
+
+
+
+   webot.waitRule('wait_class', function(info) {
+    // var courseName='lol';
+     // var tmp =true;
+  //    var options = {
+  //       host: 'api.uwaterloo.ca',
+  //       path: '/v2/courses/CS/486/examschedule.json?key=b15ec88836fc09518c7407bb3951193c'
+  //     };
+  //     function processCourseName(name){
+  //       console.log('do something with', name);
+  //     }
+  //     var callback =function(response) {
+  //         var str = '';
+  // //another chunk of data has been recieved, so append it to `str`
+  //         response.on('data', function (chunk) {
+  //         str += chunk;
+  //       });
+  //         response.on('end',function(){
+  //       // console.log(str);
+  //        // return "kkk";
+  //        var data = JSON.parse(str);
+  //        console.log(data['data']['course']);
+  //        courseName = courseName+data['data']['course'];
+  //        console.log("finished");
+  //        processCourseName(courseName);
+  //         // tmp=false;
+  //        // return "lolllll";
+  //        // return "nide ke shi "+ courseName;
+  //     });
+  //   }
+     var courseName = info.text;
+    console.log(courseName);
+    var subject = courseName.match(/[^0-9]*/)[0];
+    var courseNumber = courseName.match(/\d+/)[0];
+    console.log(subject);
+    console.log(courseNumber);
+    var url = "http://api.uwaterloo.ca/v2/courses/"+subject+"/"+courseNumber+"/"+"examschedule.json?key=b15ec88836fc09518c7407bb3951193c"
+    console.log(url);
+     var req = httpsync.get(url);
+    var response= req.end();
+    var data = JSON.parse(response['data'].toString('utf-8'))['data'];
+    // var data = JSON.parse(txt)['data'];
+    var course = data['course'];
+    data = data['sections'];
+    console.log(data);
+    // data = JSON.parse(data);
+    console.log(data[0]);
+    data = data[0];
+    var section = data['section'];
+    var day = data['day'];
+    var date = data['date'];
+    var start = data['start_time'];
+    var end = data['end_time'];
+    var location = data['location'];
+    var notes = data['notes'];
+    // while(tmp){
+    // }
+    // var req = httpsync.get({
+    //   url:"http://api.uwaterloo.ca/v2/courses/CS/486/examschedule.json?key=b15ec88836fc09518c7407bb3951193c"
+    // });
+    // var res = req.end();
+    // // var data = JSON.parse(res);
+    // var couseName = res['data'];
+    // console.log(response);
+    // req.end();
+    // console.log(res);
+    // console.log("i am finshed");
+
+     return "你的科目 "+course + " 将于 " + day +" " + date+" 在 "+location+" 进行, 开始时间 "+ start+ "结束时间 "+end ;
+  });
+  webot.set('exam schedule',{
+    description:'发送: exam, 查询你的考试时间地点',
+    pattern: /(?:exam|考？试)\s*(\d*)/,
+    handler: function(info){
+      var num = 3;
+      info.session.course = num;
+      info.wait('wait_class');
+      return "请输入课号 eg.cs115";
+    }
+  });
   webot.waitRule('wait_suggest_keyword', function(info, next){
     if (!info.text) {
       return next();
