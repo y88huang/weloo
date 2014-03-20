@@ -29,7 +29,7 @@ module.exports = exports = function(webot){
     handler: function(info){
       var reply = {
         title: '感谢你关注WeLoo公众平台',
-        pic: 'https://raw.github.com/node-webot/webot-example/master/qrcode.jpg',
+        pic: 'qrcode.jpg',
         url: 'https://github.com/node-webot/webot-example',
         description: [
           '你可以试试以下指令:',
