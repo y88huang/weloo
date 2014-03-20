@@ -29,8 +29,8 @@ module.exports = exports = function(webot){
     handler: function(info){
       var reply = {
         title: '感谢你关注WeLoo公众平台',
-        pic: 'qrcode.jpg',
-        url: 'https://github.com/node-webot/webot-example',
+        pic: 'http://imgur.com/ySk4ojW',
+        url: 'https://github.com/node-webot',
         description: [
           '你可以试试以下指令:',
             // 'game : 玩玩猜数字的游戏吧',
@@ -40,7 +40,7 @@ module.exports = exports = function(webot){
             '使用「位置」发送你的经纬度',
             '重看本指令请回复help或问号',
             '更多指令请回复more',
-            'PS: 点击下面的「查看全文」将跳转到我的github页'
+            'PS: 点击下面的「查看全文」将跳转到github源代码页'
         ].join('\n')
       };
       // 返回值如果是list，则回复图文消息列表
