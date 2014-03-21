@@ -36,11 +36,13 @@ module.exports = exports = function(webot){
             // 'game : 玩玩猜数字的游戏吧',
             'exam : 查看exam schedule',
             'w(weather):查询当前天气,温度等情况',
-            's+空格+关键词 : 我会帮你百度搜索喔',
-            's+空格+nde : 可以试试我的纠错能力',
-            '使用「位置」发送你的经纬度',
+             'game : 玩玩猜数字的游戏吧',
+            // 's+空格+关键词 : 我会帮你百度搜索喔',
+            // 's+空格+nde : 可以试试我的纠错能力',
+            // '使用「位置」发送你的经纬度',
             '重看本指令请回复help或问号',
             '更多指令请回复more',
+            '平台还在测试中,欢迎大家多提意见'
             'PS: 点击下面的「查看全文」将跳转到github源代码页'
         ].join('\n')
       };
@@ -282,7 +284,7 @@ webot.waitRule('wait_class', function(info) {
     var min = data['temperature_24hr_min_c'];
     var hum = data['relative_humidity_percent'];
     var temperature = data['temperature_current_c'];
-    output = output+ "当前温度: "+temperature+"度, 今天最高温度: "+max+ " 今天最低温度: "+min+ " 当前湿度: "+hum+"%";
+    output = output+ "当前温度: "+temperature+"度, 今天最高温度: "+max+ "度 今天最低温度: "+min+ "度 当前湿度: "+hum+"%";
   }
   else{
     output = "当前温度不明,我的朋友";
