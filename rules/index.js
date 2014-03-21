@@ -269,7 +269,7 @@ webot.waitRule('wait_class', function(info) {
 
   webot.set('current weather',{
     description:'w(weather):查询当前天气,温度等情况',
-    pattern: /(?:w|weather|天气)\s*(\d*)/,
+    pattern: /(?:w|W|Weather|weather|天气)\s*(\d*)/,
     handler: function(info){
       var url="api.uwaterloo.ca/v2/weather/current.json"
         var req = httpsync.get(url);
