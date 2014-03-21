@@ -35,6 +35,7 @@ module.exports = exports = function(webot){
           '你可以试试以下指令:',
             // 'game : 玩玩猜数字的游戏吧',
             'exam : 查看exam schedule',
+            'w(weather):查询当前天气,温度等情况',
             's+空格+关键词 : 我会帮你百度搜索喔',
             's+空格+nde : 可以试试我的纠错能力',
             '使用「位置」发送你的经纬度',
@@ -206,12 +207,12 @@ module.exports = exports = function(webot){
 
 
 
-
-   webot.waitRule('wait_class', function(info) {
-        function isEmptyObject(obj) {
+ function isEmptyObject(obj) {
       return !Object.keys(obj).length;
   }
-     var courseName = info.text;
+webot.waitRule('wait_class', function(info) {
+       
+    var courseName = info.text;
     console.log(courseName);
     var subject = courseName.match(/[^0-9]*/)[0];
     var courseNumber = courseName.match(/\d+/)[0];
@@ -265,6 +266,32 @@ module.exports = exports = function(webot){
       return "请输入课号 eg.cs115";
     }
   });
+
+  webot.set('current weather',{
+    description:'w(weather):查询当前天气,温度等情况',
+    pattern: /(?:w|weather|天气)\s*(\d*)/,
+    handler: function(info){
+      var url="api.uwaterloo.ca/v2/weather/current.json"
+        var req = httpsync.get(url);
+    var response= req.end();
+    var data = JSON.parse(response['data'].toString('utf-8'))['data'];
+    var output = '';
+    // console.log(data);
+    if(!isEmptyObject(data)){
+    var max = data['temperature_24hr_max_c'];
+    var min = data['temperature_24hr_min_c'];
+    var hum = data['relative_humidity_percent'];
+    var temperature = data['temperature_current_c'];
+    output = output+ "当前温度: "+temperature+"度, 今天最高温度: "+max+ " 今天最低温度: "+min+ " 当前湿度: "+hum+"%";
+  }
+  else{
+    output = "当前温度不明,我的朋友";
+  }
+      return output;
+    }
+  });
+
+
   webot.waitRule('wait_suggest_keyword', function(info, next){
     if (!info.text) {
       return next();
