@@ -35,6 +35,7 @@ module.exports = exports = function(webot){
           '你可以试试以下指令:',
             // 'game : 玩玩猜数字的游戏吧',
             'exam : 查看exam schedule',
+            'tim : 查询SLC的timmis营业时间',
             'w(weather):查询当前天气,温度等情况',
              'game : 玩玩猜数字的游戏吧',
             // 's+空格+关键词 : 我会帮你百度搜索喔',
@@ -268,12 +269,105 @@ webot.waitRule('wait_class', function(info) {
       return "请输入课号 eg.cs115";
     }
   });
+  // webot.set(,{
+  //   description:'tim : 查询SLC的timmis营业时间',
+  //   pattern:
+  //   handler:function(info){
+  //     var url = "https://api.uwaterloo.ca/v2/foodservices/locations.json?key=b15ec88836fc09518c7407bb3951193c"
+  //     var req = httpsync.get(url);
+  //     var response=req.end();
+  //     var data = JSON.parse(response['data'].toString('utf-8'))['data'];
+  //     var output='';
+  //     console.log(data);
+  //      if(!isEmptyObject(data)){
+  //       var day = getDay();
+  //       console.log(day);
+  //       output='lolol';
+  //      }
+  //      return output;
+  //   }
+  // });
+
+
+ webot.set('timmis slc',{
+    description:'tim : 查询SLC的timmis营业时间',
+    pattern: /(?:t|tim|T|Tim|TIM|timmis|Timmis)\s*(\d*)/,
+    handler: function(info){
+      var url="http://api.uwaterloo.ca/v2/foodservices/locations.json?key=b15ec88836fc09518c7407bb3951193c";
+        var req = httpsync.get(url);
+    var response= req.end();
+    var data = JSON.parse(response['data'].toString('utf-8'))['data'];
+    var output = '';
+    // console.log(data);
+    if(!isEmptyObject(data)){
+      var timmis;
+      for (var i = data.length - 1; i >= 0; i--) {
+        if(data[i]['outlet_id']=="123"){
+        timmis = data[i];
+        break;
+      }
+    };
+      // console.log(timmis);
+      var d = new Date();
+      var day = d.getDay();
+      // output = 'lol'+day;
+      var today='';
+      switch(day){
+        case 0:
+        today="monday";
+        break;
+        case 1:
+        today = "tuesday";
+        break;
+        case 2:
+        today = "wednesday";
+        break;
+        case 3:
+        today = "thursday";
+        break;
+        case 4:
+        today = "friday";
+        break;
+        case 5:
+        today = "saturday";
+        break;
+        case 6:
+        today = "sunday";
+        break;
+      }
+      var hours = timmis['opening_hours'][today];
+      var specialhours = timmis['special_hours'];
+      var open_hour = hours['opening_hour'];
+      var closing_hour = hours['closing_hour'];
+      console.log(hours);
+      console.log(timmis);
+
+      if((!isEmptyObject(specialhours))){
+        for (var i = specialhours.length - 1; i >= 0; i--) {
+             if(specialhours[i]['date']==d){
+              open_hours = specialhours[i]['opening_hour'];
+              closing_hour = specialhours[i]['closing_hour'];
+              break;
+             }
+        };
+      }
+      output="SLC的Tim horton's 今天"+open_hour+"开门, "+closing_hour+"关门";
+  }
+  else{
+    output = "营业时间不明,我的朋友";
+  }
+      return output;
+    }
+  });
+
+
+
 
   webot.set('current weather',{
     description:'w(weather):查询当前天气,温度等情况',
     pattern: /(?:w|W|Weather|weather|天气)\s*(\d*)/,
     handler: function(info){
-      var url="api.uwaterloo.ca/v2/weather/current.json"
+      var url="api.uwaterloo.ca/v2/weather/current.json";
         var req = httpsync.get(url);
     var response= req.end();
     var data = JSON.parse(response['data'].toString('utf-8'))['data'];
