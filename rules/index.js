@@ -311,28 +311,29 @@ webot.waitRule('wait_class', function(info) {
       // console.log(timmis);
       var d = new Date();
       var day = d.getDay();
+      console.log(day);
       // output = 'lol'+day;
       var today='';
       switch(day){
-        case 0:
+        case 1:
         today="monday";
         break;
-        case 1:
+        case 2:
         today = "tuesday";
         break;
-        case 2:
+        case 3:
         today = "wednesday";
         break;
-        case 3:
+        case 4:
         today = "thursday";
         break;
-        case 4:
+        case 5:
         today = "friday";
         break;
-        case 5:
+        case 6:
         today = "saturday";
         break;
-        case 6:
+        case 0:
         today = "sunday";
         break;
       }
@@ -340,7 +341,8 @@ webot.waitRule('wait_class', function(info) {
       var specialhours = timmis['special_hours'];
       var open_hour = hours['opening_hour'];
       var closing_hour = hours['closing_hour'];
-      // console.log(hours);
+      console.log(today);
+      console.log(hours);
       // console.log(timmis);
 
 
@@ -349,8 +351,6 @@ webot.waitRule('wait_class', function(info) {
         // console.log(specialhours);
         var now = moment().format('YYYY-MM-DD');
         for (var i = specialhours.length - 1; i >= 0; i--) {
-              console.log(specialhours[i]['date']);
-              console.log(now);
              if(specialhours[i]['date']==now){
               console.log(specialhours[i]);
               open_hour = specialhours[i]['opening_hour'];
