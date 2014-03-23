@@ -360,7 +360,8 @@ webot.waitRule('wait_class', function(info) {
              }
         };
       }
-      output="SLC的Tim horton's 今天"+open_hour+"开门, "+closing_hour+"关门";
+      var test = moment().format();
+      output="SLC的Tim horton's 今天"+open_hour+"开门, "+closing_hour+"关门 "+" now is"+test;
   }
   else{
     output = "营业时间不明,我的朋友";
