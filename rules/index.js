@@ -13,6 +13,7 @@ var package_info = require('../package.json');
 
 // var http = require('http');
 var httpsync = require('httpsync');
+var moment = require('moment');
 /**
  * 初始化路由规则
  */
@@ -339,13 +340,21 @@ webot.waitRule('wait_class', function(info) {
       var specialhours = timmis['special_hours'];
       var open_hour = hours['opening_hour'];
       var closing_hour = hours['closing_hour'];
-      console.log(hours);
-      console.log(timmis);
+      // console.log(hours);
+      // console.log(timmis);
 
+
+      //Handling special hours case here.
       if((!isEmptyObject(specialhours))){
+        // console.log(specialhours);
+        var now = moment().format('YYYY-MM-DD');
         for (var i = specialhours.length - 1; i >= 0; i--) {
-             if(specialhours[i]['date']==d){
-              open_hours = specialhours[i]['opening_hour'];
+              console.log(specialhours[i]['date']);
+              console.log(now);
+             if(specialhours[i]['date']==now){
+              console.log(specialhours[i]);
+              open_hour = specialhours[i]['opening_hour'];
+
               closing_hour = specialhours[i]['closing_hour'];
               break;
              }
