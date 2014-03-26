@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # [微信公共帐号机器人](https://github.com/node-webot/weixin-robot)示例 [![Build Status](https://api.travis-ci.org/node-webot/webot-example.png?branch=master)](https://travis-ci.org/node-webot/webot-example)
 
 ## 本地运行
@@ -62,3 +63,9 @@ webot send event      # 调试事件消息
 [@atian](https://github.com/atian25)重构并扩展为 0.2 版本。目前的测试用例也大部分由他完成。
 
 [weixin-robot] 使用了 [@JacksonTian](https://github.com/JacksonTian) 的 [wechat](https://github.com/node-webot/wechat) 组件。
+=======
+weloo
+=====
+
+a wechat robot for waterloo open data API
+>>>>>>> 972fd85021942318d68661767864e2b40807b35a
