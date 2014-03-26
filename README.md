@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 # [微信公共帐号机器人](https://github.com/node-webot/weixin-robot)示例 [![Build Status](https://api.travis-ci.org/node-webot/webot-example.png?branch=master)](https://travis-ci.org/node-webot/webot-example)
 
 ## 本地运行
@@ -68,4 +67,3 @@ weloo
 =====
 
 a wechat robot for waterloo open data API
->>>>>>> 972fd85021942318d68661767864e2b40807b35a
