@@ -229,6 +229,7 @@ webot.waitRule('wait_class', function(info) {
     var data = JSON.parse(response['data'].toString('utf-8'))['data'];
     // console.log(data);
     var output = '';
+
     if(!isEmptyObject(data)){
     var course = data['course'];
     data = data['sections'][0];
@@ -266,6 +267,7 @@ webot.waitRule('wait_class', function(info) {
     handler: function(info){
       var num = 3;
       info.session.course = num;
+      // console.log(info.raw['FromUserName']);
       info.wait('wait_class');
       return "请输入课号 eg.cs115";
     }
