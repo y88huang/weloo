@@ -19,7 +19,7 @@ var moment = require('moment');
 var moment_timezone =  require('moment-timezone');
 
 var utils = require('../utils/utils.js');
-var redis = require('../utils/redis.js').initialize();
+// var redis = require('../utils/redis.js').initialize();
 
 /**
  * 初始化路由规则
@@ -40,7 +40,7 @@ module.exports = exports = function(webot){
     handler: function(info,next){
 
   //   {
-      var userName = info.raw.FromUserName;
+      var userName = info.uid;
       var reply;
       var database = mongo.connect(mongoUri,collecions,function(err, db) {
   if(!err) {
@@ -103,7 +103,7 @@ module.exports = exports = function(webot){
     var database = mongo.connect(mongoUri,collecions,function(err, db) {
       db.collection("language",function(err,collection){
         if(!err) {
-        var userName = info.raw.FromUserName;
+        var userName = info.uid;
         var obj = {};
         obj[userName] = lanInfo;
          collection.insert(obj,function(err,cb){});
@@ -315,16 +315,16 @@ module.exports = exports = function(webot){
        var database = mongo.connect(mongoUri,collecions,function(err, db) {
       db.collection("language",function(err,collection){
         if(!err) {
-        var userName = info.raw.FromUserName;
+        var userName = info.uid;
         var obj = {};
           obj[userName] = {$exists:true};
          // info.wait("language");
       collection.find(obj).toArray(function(err,results){
         if(results.length==0){
-          next(null,"wtf?");
+          next(null,"咦？发生了奇怪的事情");
         }
         else{
-          next(null,"粗大事了,已存在");
+          next(null,"Mission Complete!");
         }
     });
     }
@@ -1012,7 +1012,7 @@ webot.set('map',{
     description: '微信语音识别',
     pattern: function(info, next) {
       return info.is('voice');
-    }
+    },
     handler: function(info, next) {
       next(null, info.param.recognition);
     }
