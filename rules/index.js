@@ -296,7 +296,7 @@ webot.waitRule('wait_class', function(info) {
 
  webot.set('browsers caf dp',{
     description:'browsers caf : 查询dp的browsers caf营业时间',
-    pattern: /^(B\b)(r|R)(o|O)(w|W)(s|S)(e|E)(r|R)(s|S)/,//wtf is that
+    pattern: /^(B|b)(r|R)(o|O)(w|W)(s|S)(e|E)(r|R)(s|S)/,//wtf is that
     handler: function(info){
       var url="http://api.uwaterloo.ca/v2/foodservices/locations.json?key=b15ec88836fc09518c7407bb3951193c";
         var req = httpsync.get(url);
@@ -458,7 +458,7 @@ webot.waitRule('wait_class', function(info) {
 
   webot.set('current weather',{
     description:'w(weather):查询当前天气,温度等情况',
-    pattern: /^(w|W)(eather)|(天气)/,
+    pattern: /^(w|W)|^((w|W)eather)|^(天气)/,
     handler: function(info){
       var url="api.uwaterloo.ca/v2/weather/current.json";
         var req = httpsync.get(url);
