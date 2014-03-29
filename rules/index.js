@@ -107,7 +107,12 @@ module.exports = exports = function(webot){
         obj[userName] = lanInfo;
          collection.insert(obj,function(err,cb){});
          // info.wait("language");
-         next(null,"已设置您的语言");
+         if(language==1){
+         next(null,"欢迎使用微信公众平台,输入Help获取帮助");
+       }
+       else {
+        next(null,"Welcome WeLoo! use 'help' to get more information")
+       }
         }
       });
     });
