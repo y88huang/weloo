@@ -51,12 +51,9 @@ module.exports = exports = function(webot){
         obj2[userName] = {$exists:true};
       collection.find(obj2).toArray(function(err,results){
         if(results.length==0){
-          console.log(results);
-        var obj = {};
-        obj[userName] = 'English';
-         collection.insert(obj,function(err,cb){});
-         reply = "da sb";
-          return next(null,reply);
+         reply = "请选择语言 Please choose your language\n1.中文 2.English";
+         info.wait("language");
+         return next(null,reply);
         }
         else{
           reply = {
@@ -84,13 +81,44 @@ module.exports = exports = function(webot){
       })})
     }});
 
-        
-
      
       // 返回值如果是list，则回复图文消息列表
       return reply;
     }
   });
+
+//To do.
+ webot.waitRule('language', function(info, next) {
+    var language = Number(info.text);
+    var lanInfo = '';
+    if(language==1){
+        lanInfo='CH';
+    }
+    else if(language==2){
+        lanInfo='EN';
+    }
+    var database = mongo.connect(mongoUri,collecions,function(err, db) {
+      db.collection("language",function(err,collection){
+        if(!err) {
+        var userName = info.raw.FromUserName;
+        var obj = {};
+        obj[userName] = lanInfo;
+         collection.insert(obj,function(err,cb){});
+         // info.wait("language");
+         next(null,"已设置您的语言");
+        }
+      });
+    });
+  });
+
+
+
+
+
+
+
+
+
 
   // 更简单地设置一条规则
   webot.set(/^more$/i, function(info){
