@@ -19,6 +19,11 @@ var httpsync = require('httpsync');
 var moment = require('moment');
 
 
+var utils = require('../utils/utils.js');
+
+// var redis = require('../utils/redis.js').initialize();
+
+// console.log(redis);
 
 /**
  * 初始化路由规则
@@ -200,11 +205,30 @@ module.exports = exports = function(webot){
 
 
 
-//
-//
-// webot.waitRule('select_language', function(info) {
-//   var 
-//   });
+  webot.waitRule('wait_ji', function(info) {
+    var text = info.text;
+    if (text == '不玩了') {
+      info.resolve();
+      return '88~';
+    }
+    var url = "http://xjjapi.duapp.com/api/show.action?m=chat&msg="+info.text;
+    var req = httpsync.get(url);
+    var response= req.end();
+    var data = response['data'].toString('utf-8');
+    info.rewait();
+    return data;
+  });
+
+  webot.set('little yellow chicken', {
+    pattern: /小黄鸡/,
+    handler: function(info) {
+      info.wait('wait_ji');
+      return '我已变身鸡器人！';
+    }
+  }
+
+  );
+
   // 定义一个 wait rule
   webot.waitRule('wait_guess', function(info) {
     var r = Number(info.text);
@@ -248,13 +272,6 @@ module.exports = exports = function(webot){
   });
 
 
-     
-
-
-
- function isEmptyObject(obj) {
-      return !Object.keys(obj).length;
-  }
 webot.waitRule('wait_class', function(info) {
        
     var courseName = info.text;
@@ -270,11 +287,9 @@ webot.waitRule('wait_class', function(info) {
     var data = JSON.parse(response['data'].toString('utf-8'))['data'];
     // console.log(data);
     var output = '';
-    // mongo.Db.connect(mongoUri, function (err, db) {
-    // db.u
-    // });
-    // });
-    if(!isEmptyObject(data)){
+
+
+    if(!utils.isEmptyObject(data)){
     var course = data['course'];
     data = data['sections'][0];
 
@@ -326,7 +341,7 @@ webot.waitRule('wait_class', function(info) {
   //     var data = JSON.parse(response['data'].toString('utf-8'))['data'];
   //     var output='';
   //     console.log(data);
-  //      if(!isEmptyObject(data)){
+  //      if(!utils.isEmptyObject(data)){
   //       var day = getDay();
   //       console.log(day);
   //       output='lolol';
@@ -336,91 +351,9 @@ webot.waitRule('wait_class', function(info) {
   // });
 
 
- 
-
- webot.set('browsers caf dp',{
-    description:'browsers caf : 查询dp的browsers caf营业时间',
-    pattern: /^(B|b)(r|R)(o|O)(w|W)(s|S)(e|E)(r|R)(s|S)/,//wtf is that
-    handler: function(info){
-      var url="http://api.uwaterloo.ca/v2/foodservices/locations.json?key=b15ec88836fc09518c7407bb3951193c";
-        var req = httpsync.get(url);
-    var response= req.end();
-    var data = JSON.parse(response['data'].toString('utf-8'))['data'];
-    var output = '';
-    // console.log(data);
-    if(!isEmptyObject(data)){
-      var browsers;
-      for (var i = data.length - 1; i >= 0; i--) {
-        if(data[i]['outlet_id']=="20"){
-        browsers = data[i];
-        break;
-      }
-    };
-      // console.log(timmis);
-      var d = new Date();
-      var day = d.getDay();
-      console.log(day);
-      // output = 'lol'+day;
-      var today='';
-      switch(day){
-        case 1:
-        today="monday";
-        break;
-        case 2:
-        today = "tuesday";
-        break;
-        case 3:
-        today = "wednesday";
-        break;
-        case 4:
-        today = "thursday";
-        break;
-        case 5:
-        today = "friday";
-        break;
-        case 6:
-        today = "saturday";
-        break;
-        case 0:
-        today = "sunday";
-        break;
-      }
-      var hours = browsers['opening_hours'][today];
-      var specialhours = browsers['special_hours'];
-      var open_hour = hours['opening_hour'];
-      var closing_hour = hours['closing_hour'];
-      console.log(today);
-      console.log(hours);
-      // console.log(browsers);
-
-
-      //Handling special hours case here.
-      if((!isEmptyObject(specialhours))){
-        // console.log(specialhours);
-        var now = moment().format('YYYY-MM-DD');
-        for (var i = specialhours.length - 1; i >= 0; i--) {
-             if(specialhours[i]['date']==now){
-              console.log(specialhours[i]);
-              open_hour = specialhours[i]['opening_hour'];
-
-              closing_hour = specialhours[i]['closing_hour'];
-              break;
-             }
-        };
-      }
-      output="SLC的Tim horton's 今天"+open_hour+"开门, "+closing_hour+"关门 ";
-  }
-  else{
-    output = "营业时间不明,我的朋友";
-  }
-      return output;
-    }
-  });
-
-
  webot.set('timmis slc',{
     description:'tim : 查询SLC的timmis营业时间',
-    pattern: /^(t|T)(i|I)(m|M)/,
+    pattern: /(?:t|tim|T|Tim|TIM|timmis|Timmis)\s*(\d*)/,
     handler: function(info){
       var url="http://api.uwaterloo.ca/v2/foodservices/locations.json?key=b15ec88836fc09518c7407bb3951193c";
         var req = httpsync.get(url);
@@ -428,7 +361,7 @@ webot.waitRule('wait_class', function(info) {
     var data = JSON.parse(response['data'].toString('utf-8'))['data'];
     var output = '';
     // console.log(data);
-    if(!isEmptyObject(data)){
+    if(!utils.isEmptyObject(data)){
       var timmis;
       for (var i = data.length - 1; i >= 0; i--) {
         if(data[i]['outlet_id']=="123"){
@@ -475,7 +408,7 @@ webot.waitRule('wait_class', function(info) {
 
 
       //Handling special hours case here.
-      if((!isEmptyObject(specialhours))){
+      if((!utils.isEmptyObject(specialhours))){
         // console.log(specialhours);
         var now = moment().format('YYYY-MM-DD');
         for (var i = specialhours.length - 1; i >= 0; i--) {
@@ -502,15 +435,16 @@ webot.waitRule('wait_class', function(info) {
 
   webot.set('current weather',{
     description:'w(weather):查询当前天气,温度等情况',
-    pattern: /^(w|W)|^((w|W)eather)|^(天气)/,
+    pattern: /(?:w|W|Weather|weather|天气)\s*(\d*)/,
     handler: function(info){
-      var url="api.uwaterloo.ca/v2/weather/current.json";
-        var req = httpsync.get(url);
+      // console.log(info);
+    var url="api.uwaterloo.ca/v2/weather/current.json";
+    var req = httpsync.get(url);
     var response= req.end();
     var data = JSON.parse(response['data'].toString('utf-8'))['data'];
     var output = '';
     // console.log(data);
-    if(!isEmptyObject(data)){
+    if(!utils.isEmptyObject(data)){
     var max = data['temperature_24hr_max_c'];
     var min = data['temperature_24hr_min_c'];
     var hum = data['relative_humidity_percent'];
