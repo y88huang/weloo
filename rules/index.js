@@ -64,6 +64,10 @@ module.exports = exports = function(webot){
             'tim : 查询SLC的timmis营业时间',
             'w(weather):查询当前天气,温度等情况',
              'game : 玩玩猜数字的游戏吧',
+             'browsers: 查询dp的browsers caf营业时间',
+             'bon: 查询dc的bon app营业时间',
+             'coffee: 查询ml的coffee shop营业时间',
+             'bru(brubakers): 查询slc的brubakers营业时间',
             // 's+空格+关键词 : 我会帮你百度搜索喔',
             // 's+空格+nde : 可以试试我的纠错能力',
             // '使用「位置」发送你的经纬度',
@@ -376,9 +380,14 @@ module.exports = exports = function(webot){
   // });
 
 
+<<<<<<< HEAD
  webot.set('timmis slc',{
     description:'tim : 查询SLC的timmis营业时间',
     pattern: /(?:t|tim|T|Tim|TIM|timmis|Timmis)\s*(\d*)/,
+=======
+ webot.set('Brubakers slc',{
+    description:'Brubakers : 查询slc的Brubakers营业时间',
+    pattern: /^(B|b)(ru)|^(B|b)(rubakers)/,//wtf is that
     handler: function(info){
       var url="http://api.uwaterloo.ca/v2/foodservices/locations.json?key=b15ec88836fc09518c7407bb3951193c";
         var req = httpsync.get(url);
@@ -386,11 +395,11 @@ module.exports = exports = function(webot){
     var data = JSON.parse(response['data'].toString('utf-8'))['data'];
     var output = '';
     // console.log(data);
-    if(!utils.isEmptyObject(data)){
-      var timmis;
+    if(!isEmptyObject(data)){
+      var browsers;
       for (var i = data.length - 1; i >= 0; i--) {
-        if(data[i]['outlet_id']=="123"){
-        timmis = data[i];
+        if(data[i]['outlet_id']=="20"){
+        browsers = data[i];
         break;
       }
     };
@@ -423,13 +432,301 @@ module.exports = exports = function(webot){
         today = "sunday";
         break;
       }
-      var hours = timmis['opening_hours'][today];
-      var specialhours = timmis['special_hours'];
+      var hours = browsers['opening_hours'][today];
+      var specialhours = browsers['special_hours'];
       var open_hour = hours['opening_hour'];
       var closing_hour = hours['closing_hour'];
+      var closed = hours['is_closed'];
       console.log(today);
       console.log(hours);
+      // console.log(browsers);
+
+
+      //Handling special hours case here.
+      if((!isEmptyObject(specialhours))){
+        // console.log(specialhours);
+        var now = moment().format('YYYY-MM-DD');
+        for (var i = specialhours.length - 1; i >= 0; i--) {
+             if(specialhours[i]['date']==now){
+              console.log(specialhours[i]);
+              open_hour = specialhours[i]['opening_hour'];
+
+              closing_hour = specialhours[i]['closing_hour'];
+              break;
+             }
+        };
+      }
+      if(!closed){
+        output="SLC的Brubakers 今天"+open_hour+"开门, "+closing_hour+"关门 ";
+      }
+      else{
+        output="SLC的Brubakers 今天不开门！";
+      }
+  }
+  else{
+    output = "营业时间不明,我的朋友";
+  }
+      return output;
+    }
+  });
+
+webot.set('map',{
+    description:'map test',
+    pattern: /^(map)/,//wtf is that
+    handler: function(info){
+      var gm = require('googlemaps');
+      var util = require('util');
+      var data;
+       gm.reverseGeocode('43.464258,-80.520410', function(err, data){
+        console.log(data);
+        });
+
+        // gm.reverseGeocode(gm.checkAndConvertPoint([41.850033, -87.6500523]), function(err, data){
+        // util.puts(JSON.stringify(data));
+        // });
+        output = "看你妈！"
+        return output;
+    }
+  });
+
+
+
+ webot.set('coffee shop ml',{
+    description:'Coffee Shop : 查询ml的coffee shop营业时间',
+    pattern: /^(c|C)(offee)/,//wtf is that
+    handler: function(info){
+      var url="http://api.uwaterloo.ca/v2/foodservices/locations.json?key=b15ec88836fc09518c7407bb3951193c";
+        var req = httpsync.get(url);
+    var response= req.end();
+    var data = JSON.parse(response['data'].toString('utf-8'))['data'];
+    var output = '';
+    // console.log(data);
+    if(!isEmptyObject(data)){
+      var browsers;
+      for (var i = data.length - 1; i >= 0; i--) {
+        if(data[i]['outlet_id']=="20"){
+        browsers = data[i];
+        break;
+      }
+    };
       // console.log(timmis);
+      var d = new Date();
+      var day = d.getDay();
+      console.log(day);
+      // output = 'lol'+day;
+      var today='';
+      switch(day){
+        case 1:
+        today="monday";
+        break;
+        case 2:
+        today = "tuesday";
+        break;
+        case 3:
+        today = "wednesday";
+        break;
+        case 4:
+        today = "thursday";
+        break;
+        case 5:
+        today = "friday";
+        break;
+        case 6:
+        today = "saturday";
+        break;
+        case 0:
+        today = "sunday";
+        break;
+      }
+      var hours = browsers['opening_hours'][today];
+      var specialhours = browsers['special_hours'];
+      var open_hour = hours['opening_hour'];
+      var closing_hour = hours['closing_hour'];
+      var closed = hours['is_closed'];
+      console.log(today);
+      console.log(hours);
+      // console.log(browsers);
+
+
+      //Handling special hours case here.
+      if((!isEmptyObject(specialhours))){
+        // console.log(specialhours);
+        var now = moment().format('YYYY-MM-DD');
+        for (var i = specialhours.length - 1; i >= 0; i--) {
+             if(specialhours[i]['date']==now){
+              console.log(specialhours[i]);
+              open_hour = specialhours[i]['opening_hour'];
+
+              closing_hour = specialhours[i]['closing_hour'];
+              break;
+             }
+        };
+      }
+      if(!closed){
+        output="ML的Coffee Shop 今天"+open_hour+"开门, "+closing_hour+"关门 ";
+      }
+      else{
+        output="ML的Coffee Shop 今天不开门 T_T";
+      }
+  }
+  else{
+    output = "营业时间不明,我的朋友";
+  }
+      return output;
+    }
+  });
+
+
+
+
+ webot.set('bon app dc',{
+    description:'Bon app : 查询dc的Bon app营业时间',
+    pattern: /^(B|b)(on)/,//wtf is that
+>>>>>>> modified index.js add distance calculating
+    handler: function(info){
+      var url="http://api.uwaterloo.ca/v2/foodservices/locations.json?key=b15ec88836fc09518c7407bb3951193c";
+        var req = httpsync.get(url);
+    var response= req.end();
+    var data = JSON.parse(response['data'].toString('utf-8'))['data'];
+    var output = '';
+    // console.log(data);
+<<<<<<< HEAD
+    if(!utils.isEmptyObject(data)){
+      var timmis;
+=======
+    if(!isEmptyObject(data)){
+      var browsers;
+>>>>>>> modified index.js add distance calculating
+      for (var i = data.length - 1; i >= 0; i--) {
+        if(data[i]['outlet_id']=="3"){
+        browsers = data[i];
+        break;
+      }
+    };
+      // console.log(timmis);
+      var d = new Date();
+      var day = d.getDay();
+      console.log(day);
+      // output = 'lol'+day;
+      var today='';
+      switch(day){
+        case 1:
+        today="monday";
+        break;
+        case 2:
+        today = "tuesday";
+        break;
+        case 3:
+        today = "wednesday";
+        break;
+        case 4:
+        today = "thursday";
+        break;
+        case 5:
+        today = "friday";
+        break;
+        case 6:
+        today = "saturday";
+        break;
+        case 0:
+        today = "sunday";
+        break;
+      }
+      var hours = browsers['opening_hours'][today];
+      var specialhours = browsers['special_hours'];
+      var open_hour = hours['opening_hour'];
+      var closing_hour = hours['closing_hour'];
+      var closed = hours['is_closed'];
+      console.log(today);
+      console.log(hours);
+      // console.log(browsers);
+
+
+      //Handling special hours case here.
+      if((!isEmptyObject(specialhours))){
+        // console.log(specialhours);
+        var now = moment().format('YYYY-MM-DD');
+        for (var i = specialhours.length - 1; i >= 0; i--) {
+             if(specialhours[i]['date']==now){
+              console.log(specialhours[i]);
+              open_hour = specialhours[i]['opening_hour'];
+
+              closing_hour = specialhours[i]['closing_hour'];
+              break;
+             }
+        };
+      }
+      if(!closed){
+        output="DC的Bon App 今天"+open_hour+"开门, "+closing_hour+"关门 ";
+      }
+      else{
+        output="DC的Bon App 今天不开门";
+      }
+  }
+  else{
+    output = "营业时间不明,我的朋友";
+  }
+      return output;
+    }
+  });
+ 
+
+
+ webot.set('browsers caf dp',{
+    description:'browsers caf : 查询dp的browsers caf营业时间',
+    pattern: /^(B|b)(r|R)(o|O)(w|W)(s|S)(e|E)(r|R)(s|S)/,//wtf is that
+    handler: function(info){
+      var url="http://api.uwaterloo.ca/v2/foodservices/locations.json?key=b15ec88836fc09518c7407bb3951193c";
+        var req = httpsync.get(url);
+    var response= req.end();
+    var data = JSON.parse(response['data'].toString('utf-8'))['data'];
+    var output = '';
+    // console.log(data);
+    if(!isEmptyObject(data)){
+      var browsers;
+      for (var i = data.length - 1; i >= 0; i--) {
+        if(data[i]['outlet_id']=="20"){
+        browsers = data[i];
+        break;
+      }
+    };
+      // console.log(timmis);
+      var d = new Date();
+      var day = d.getDay();
+      console.log(day);
+      // output = 'lol'+day;
+      var today='';
+      switch(day){
+        case 1:
+        today="monday";
+        break;
+        case 2:
+        today = "tuesday";
+        break;
+        case 3:
+        today = "wednesday";
+        break;
+        case 4:
+        today = "thursday";
+        break;
+        case 5:
+        today = "friday";
+        break;
+        case 6:
+        today = "saturday";
+        break;
+        case 0:
+        today = "sunday";
+        break;
+      }
+      var hours = browsers['opening_hours'][today];
+      var specialhours = browsers['special_hours'];
+      var open_hour = hours['opening_hour'];
+      var closing_hour = hours['closing_hour'];
+      var closed = hours['is_closed'];
+      console.log(today);
+      console.log(hours);
+      // console.log(browsers);
 
 
       //Handling special hours case here.
@@ -446,7 +743,219 @@ module.exports = exports = function(webot){
              }
         };
       }
-      output="SLC的Tim horton's 今天"+open_hour+"开门, "+closing_hour+"关门 ";
+      if(!closed){
+        output="DP的Browsers caf 今天"+open_hour+"开门, "+closing_hour+"关门 ";
+      }else{
+        output="DP的Browsers caf 今天不开门 :P";
+      }
+  }
+  else{
+    output = "营业时间不明,我的朋友";
+  }
+      return output;
+    }
+  });
+
+
+ webot.set('timmis',{
+    description:'tim hortons : 查询所有的timmis营业时间',
+    pattern: /^(t|T)(i|I)(m|M)/,
+    handler: function(info){
+      var url="http://api.uwaterloo.ca/v2/foodservices/locations.json?key=b15ec88836fc09518c7407bb3951193c";
+        var req = httpsync.get(url);
+    var response= req.end();
+    var data = JSON.parse(response['data'].toString('utf-8'))['data'];
+    var output = '';
+    // console.log(data);
+    if(!isEmptyObject(data)){
+      var timmis_dcl;
+      var timmis_sch;
+      var timmis_dc;
+      var timmis_ml;
+      var timmis_slc;
+      for (var i = data.length - 1; i >= 0; i--) {
+         if(data[i]['outlet_id']=="303"){
+           timmis_dcl = data[i];
+         }
+         else if(data[i]['outlet_id']=="146"){
+            timmis_sch = data[i];
+         }
+         else if(data[i]['outlet_id']=="145"){
+            timmis_dc = data[i];
+         }
+         else if(data[i]['outlet_id']=="144"){
+            timmis_ml = data[i];
+         }
+         else if(data[i]['outlet_id']=="123"){
+           timmis_slc = data[i];
+           //break;
+        }
+    };
+      // console.log(timmis);
+      var d = new Date();
+      var day = d.getDay();
+      console.log(day);
+      // output = 'lol'+day;
+      var today='';
+      switch(day){
+        case 1:
+        today="monday";
+        break;
+        case 2:
+        today = "tuesday";
+        break;
+        case 3:
+        today = "wednesday";
+        break;
+        case 4:
+        today = "thursday";
+        break;
+        case 5:
+        today = "friday";
+        break;
+        case 6:
+        today = "saturday";
+        break;
+        case 0:
+        today = "sunday";
+        break;
+      }
+      var slc_hours = timmis_slc['opening_hours'][today];
+      var slc_specialhours = timmis_slc['special_hours'];
+      var slc_open_hour = slc_hours['opening_hour'];
+      var slc_closing_hour = slc_hours['closing_hour'];
+      var closed = slc_hours['is_closed'];
+      console.log(today);
+      console.log(slc_hours);
+       //console.log(timmis_slc);
+
+
+      //Handling special hours case here.
+      if((!isEmptyObject(slc_specialhours))){
+        // console.log(specialhours);
+        var now = moment().format('YYYY-MM-DD');
+        for (var i = slc_specialhours.length - 1; i >= 0; i--) {
+             if(slc_specialhours[i]['date']==now){
+              console.log(slc_specialhours[i]);
+              slc_open_hour = slc_specialhours[i]['opening_hour'];
+
+              slc_closing_hour = slc_specialhours[i]['closing_hour'];
+              break;
+             }
+        };
+      }
+      if(!closed){
+        output+="SLC的Tim horton's 今天"+slc_open_hour+"开门, "+slc_closing_hour+"关门 \n";
+      }
+      else{
+        output+="SLC的Tim horton's 今天不开门哦 \n";
+      }
+
+      //Dc library
+      var dcl_hours = timmis_dcl['opening_hours'][today];
+      var dcl_specialhours = timmis_dcl['special_hours'];
+      var dcl_open_hour = dcl_hours['opening_hour'];
+      var dcl_closing_hour = dcl_hours['closing_hour'];
+      closed = dcl_hours['is_closed'];
+      //Handling special hours case here.
+      if((!isEmptyObject(dcl_specialhours))){
+        // console.log(specialhours);
+        var now = moment().format('YYYY-MM-DD');
+        for (var i = dcl_specialhours.length - 1; i >= 0; i--) {
+             if(dcl_specialhours[i]['date']==now){
+              console.log(dcl_specialhours[i]);
+              dcl_open_hour = dcl_specialhours[i]['opening_hour'];
+
+              dcl_closing_hour = dcl_specialhours[i]['closing_hour'];
+              break;
+             }
+        };
+      }
+      if(!closed){
+        output+="    DC library的Tim horton's 今天"+dcl_open_hour+"开门, "+dcl_closing_hour+"关门 \n";
+      }
+      else{
+        output+="    DC library的Tim horton's 今天不开门哦 \n";
+      }
+
+      //SCH
+      var sch_hours = timmis_sch['opening_hours'][today];
+      var sch_specialhours = timmis_sch['special_hours'];
+      var sch_open_hour = sch_hours['opening_hour'];
+      var sch_closing_hour = sch_hours['closing_hour'];
+      closed = sch_hours['is_closed'];
+      //Handling special hours case here.
+      if((!isEmptyObject(sch_specialhours))){
+        // console.log(specialhours);
+        var now = moment().format('YYYY-MM-DD');
+        for (var i = sch_specialhours.length - 1; i >= 0; i--) {
+             if(sch_specialhours[i]['date']==now){
+              console.log(sch_specialhours[i]);
+              sch_open_hour = sch_specialhours[i]['opening_hour'];
+              sch_closing_hour = sch_specialhours[i]['closing_hour'];
+              break;
+             }
+        };
+      }
+      if(!closed){
+        output+="    SCH的Tim horton's 今天"+sch_open_hour+"开门, "+sch_closing_hour+"关门 \n";
+      }
+      else{
+        output+="    SCH的Tim horton's 今天不开门哦 \n";
+      }
+
+      var dc_hours = timmis_dc['opening_hours'][today];
+      var dc_specialhours = timmis_dc['special_hours'];
+      var dc_open_hour = dc_hours['opening_hour'];
+      var dc_closing_hour = dc_hours['closing_hour'];
+      closed = dc_hours['is_closed'];
+      //Handling special hours case here.
+      if((!isEmptyObject(dc_specialhours))){
+        // console.log(specialhours);
+        var now = moment().format('YYYY-MM-DD');
+        for (var i = dc_specialhours.length - 1; i >= 0; i--) {
+             if(dc_specialhours[i]['date']==now){
+              console.log(dc_specialhours[i]);
+              dc_open_hour = dc_specialhours[i]['opening_hour'];
+              dc_closing_hour = dc_specialhours[i]['closing_hour'];
+              break;
+             }
+        };
+      }
+      if(!closed){
+        output+="    DC的Tim horton's 今天"+dc_open_hour+"开门, "+dc_closing_hour+"关门 \n";
+      }
+      else{
+        output+="    DC的Tim horton's 今天不开门哦 \n";
+      }
+
+      var ml_hours = timmis_ml['opening_hours'][today];
+      var ml_specialhours = timmis_ml['special_hours'];
+      var ml_open_hour = ml_hours['opening_hour'];
+      var ml_closing_hour = ml_hours['closing_hour'];
+      closed = ml_hours['is_closed'];
+      //Handling special hours case here.
+      if((!isEmptyObject(ml_specialhours))){
+        // console.log(specialhours);
+        var now = moment().format('YYYY-MM-DD');
+        for (var i = ml_specialhours.length - 1; i >= 0; i--) {
+             if(ml_specialhours[i]['date']==now){
+              console.log(ml_specialhours[i]);
+              ml_open_hour = ml_specialhours[i]['opening_hour'];
+              ml_closing_hour = ml_specialhours[i]['closing_hour'];
+              break;
+             }
+        };
+      }
+      if(!closed){
+        output+="    ML的Tim horton's 今天"+ml_open_hour+"开门, "+ml_closing_hour+"关门 \n";
+      }
+      else{
+        output+="    ML的Tim horton's 今天不开门哦 \n";
+      }
+
+
+
   }
   else{
     output = "营业时间不明,我的朋友";
@@ -597,18 +1106,62 @@ module.exports = exports = function(webot){
     }
   });
 
+//calculate distance between two locations
+function distance(lat1, lon1, lat2, lon2, unit) {
+    var radlat1 = Math.PI * lat1/180
+    var radlat2 = Math.PI * lat2/180
+    var radlon1 = Math.PI * lon1/180
+    var radlon2 = Math.PI * lon2/180
+    var theta = lon1-lon2
+    var radtheta = Math.PI * theta/180
+    var dist = Math.sin(radlat1) * Math.sin(radlat2) + Math.cos(radlat1) * Math.cos(radlat2) * Math.cos(radtheta);
+    dist = Math.acos(dist)
+    dist = dist * 180/Math.PI
+    dist = dist * 60 * 1.1515
+    if (unit=="K") { dist = dist * 1.609344 }
+    if (unit=="N") { dist = dist * 0.8684 }
+    if (unit=="meter") { dist = dist * 1.609344*1000 }
+    return dist
+}
+
   //支持location消息 此examples使用的是高德地图的API
   //http://restapi.amap.com/rgeocode/simple?resType=json&encode=utf-8&range=3000&roadnum=0&crossnum=0&poinum=0&retvalue=1&sid=7001&region=113.24%2C23.08
   webot.set('check_location', {
-    description: '发送你的经纬度,我会查询你的位置',
+    description: '发送你的经纬度,我会查询你和SLC Tim Hortons之间的距离',
     pattern: function(info){
       return info.is('location');
     },
     handler: function(info, next){
-      geo2loc(info.param, function(err, location, data) {
-        location = location || info.label;
-        next(null, location ? '你正在' + location : '我不知道你在什么地方。');
-      });
+      console.log("location checking");
+
+      console.log("lat: " + info.raw.Location_X);
+      console.log("long: " + info.raw.Location_Y);
+      var dis = distance(info.raw.Location_X,info.raw.Location_Y,43.471324,-80.545186,"meter");
+      var gm = require('googlemaps');
+      var util = require('util');
+      var data;
+      var output = "";
+      var address = "";
+      var s = info.raw.Location_X.toString();
+      var distance_to_slc_tim = Math.ceil(dis);
+      s +=",";
+      s += info.raw.Location_Y.toString();
+       gm.reverseGeocode(s, function(err, data){
+        if(data.results.length<1){
+          output = "no such address. I am sorry buddy!";
+        }
+        else{
+          address = data.results[0].formatted_address;
+          // log("address: %s", output);
+          output = "your current location is: "+address+"\n";
+          output += "    distance between you and SLC Tim Hortons is: "+ distance_to_slc_tim+" m";
+        }
+          next(null, output);
+        });
+      // geo2loc(info.param, function(err, location, data) {
+      //   location = location || info.label;
+      //   next(null, location ? '你正在' + location : '我不知道你在什么地方。');
+      // });
     }
   });
 
