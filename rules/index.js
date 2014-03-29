@@ -11,7 +11,7 @@ var package_info = require('../package.json');
 var mongo = require('mongodb');
 var mongoUri = process.env.MONGOLAB_URI || process.env.MONGOHQ_URL||
             'mongodb://y88huang:123456@oceanic.mongohq.com:10087/app23211056';
-var collecions = ["language"];
+var collecions = ["userLanguage"];
 
 //A blocking library enable us to wait for API response
 var httpsync = require('httpsync');
@@ -19,7 +19,6 @@ var moment = require('moment');
 var moment_timezone =  require('moment-timezone');
 
 var utils = require('../utils/utils.js');
-// var redis = require('../utils/redis.js').initialize();
 
 /**
  * 初始化路由规则
@@ -40,7 +39,7 @@ module.exports = exports = function(webot){
     handler: function(info,next){
 
   //   {
-      var userName = info.uid;
+      var userName = info.raw.FromUserName;
       var reply;
       var database = mongo.connect(mongoUri,collecions,function(err, db) {
   if(!err) {
@@ -51,7 +50,7 @@ module.exports = exports = function(webot){
         if(results.length==0){
          reply = "请选择语言 Please choose your language\n1.中文 2.English";
          info.wait("language");
-         next(null,reply);
+         return next(null,reply);
         }
         else{
           reply = {
@@ -69,7 +68,6 @@ module.exports = exports = function(webot){
              'bon: 查询dc的bon app营业时间',
              'coffee: 查询ml的coffee shop营业时间',
              'bru(brubakers): 查询slc的brubakers营业时间',
-             'Language: 重新选择语言',
             // 's+空格+关键词 : 我会帮你百度搜索喔',
             // 's+空格+nde : 可以试试我的纠错能力',
             // '使用「位置」发送你的经纬度',
@@ -79,7 +77,7 @@ module.exports = exports = function(webot){
             'PS: 点击下面的「查看全文」将跳转到github源代码页'
         ].join('\n')
       };
-      next(null,reply);
+      return next(null,reply);
         }
       })})
     }});
@@ -103,10 +101,11 @@ module.exports = exports = function(webot){
     var database = mongo.connect(mongoUri,collecions,function(err, db) {
       db.collection("language",function(err,collection){
         if(!err) {
-        var userName = info.uid;
+        var userName = info.raw.FromUserName;
         var obj = {};
         obj[userName] = lanInfo;
          collection.insert(obj,function(err,cb){});
+
          if(language==1){
          webot.config.lang = "zh_cn"
        }
@@ -124,6 +123,7 @@ module.exports = exports = function(webot){
       });
     });
   });
+
 
 
 
@@ -313,6 +313,7 @@ module.exports = exports = function(webot){
     }
   });
   
+
 
   webot.set('set language',{
     description: '发送: 重新设置语言',
@@ -894,10 +895,20 @@ webot.set('map',{
         };
       }
       if(!closed){
-        output+="SLC的Tim horton's 今天"+slc_open_hour+"开门, "+slc_closing_hour+"关门 \n";
+        //output+="SLC的Tim horton's 今天"+slc_open_hour+"开门, "+slc_closing_hour+"关门 \n";
+        output += utils.localizedText(webot, 
+        {
+          'en_us' : "SLC Tim horton's open hour: "+slc_open_hour+"  closing hour: "+slc_closing_hour+"\n",
+          'zh_cn' : "SLC的Tim horton's 今天"+slc_open_hour+"开门, "+slc_closing_hour+"关门 \n"
+        })
       }
       else{
-        output+="SLC的Tim horton's 今天不开门哦 \n";
+        //output+="SLC的Tim horton's 今天不开门哦 \n";
+        output += utils.localizedText(webot, 
+        {
+          'en_us' : "SLC Tim hortons is closed \n",
+          'zh_cn' : "SLC的Tim horton's 今天不开门哦 \n"
+        })
       }
 
       //Dc library
@@ -921,10 +932,20 @@ webot.set('map',{
         };
       }
       if(!closed){
-        output+="    DC library的Tim horton's 今天"+dcl_open_hour+"开门, "+dcl_closing_hour+"关门 \n";
+        //output+="SLC的Tim horton's 今天"+slc_open_hour+"开门, "+slc_closing_hour+"关门 \n";
+        output += utils.localizedText(webot, 
+        {
+          'en_us' : "DC library Tim horton's open hour: "+dcl_open_hour+"  closing hour: "+dcl_closing_hour+"\n",
+          'zh_cn' : "DC library的Tim horton's 今天"+dcl_open_hour+"开门, "+dcl_closing_hour+"关门 \n"
+        })
       }
       else{
-        output+="    DC library的Tim horton's 今天不开门哦 \n";
+        //output+="SLC的Tim horton's 今天不开门哦 \n";
+        output += utils.localizedText(webot, 
+        {
+          'en_us' : "DC library Tim hortons is closed \n",
+          'zh_cn' : "DC library的Tim horton's 今天不开门哦 \n"
+        })
       }
 
       //SCH
@@ -947,10 +968,20 @@ webot.set('map',{
         };
       }
       if(!closed){
-        output+="    SCH的Tim horton's 今天"+sch_open_hour+"开门, "+sch_closing_hour+"关门 \n";
+        //output+="SLC的Tim horton's 今天"+slc_open_hour+"开门, "+slc_closing_hour+"关门 \n";
+        output += utils.localizedText(webot, 
+        {
+          'en_us' : "SCH Tim horton's open hour: "+sch_open_hour+"  closing hour: "+sch_closing_hour+"\n",
+          'zh_cn' : "SCH的Tim horton's 今天"+sch_open_hour+"开门, "+sch_closing_hour+"关门 \n"
+        })
       }
       else{
-        output+="    SCH的Tim horton's 今天不开门哦 \n";
+        //output+="SLC的Tim horton's 今天不开门哦 \n";
+        output += utils.localizedText(webot, 
+        {
+          'en_us' : "SCH Tim hortons is closed \n",
+          'zh_cn' : "SCH的Tim horton's 今天不开门哦 \n"
+        })
       }
 
       var dc_hours = timmis_dc['opening_hours'][today];
@@ -972,10 +1003,18 @@ webot.set('map',{
         };
       }
       if(!closed){
-        output+="    DC的Tim horton's 今天"+dc_open_hour+"开门, "+dc_closing_hour+"关门 \n";
+        output += utils.localizedText(webot, 
+        {
+          'en_us' : "DC Tim horton's open hour: "+dc_open_hour+"  closing hour: "+dc_closing_hour+"\n",
+          'zh_cn' : "DC的Tim horton's 今天"+dc_open_hour+"开门, "+dc_closing_hour+"关门 \n"
+        })
       }
       else{
-        output+="    DC的Tim horton's 今天不开门哦 \n";
+        output += utils.localizedText(webot, 
+        {
+          'en_us' : "DC Tim hortons is closed \n",
+          'zh_cn' : "DC的Tim horton's 今天不开门哦 \n"
+        })
       }
 
       var ml_hours = timmis_ml['opening_hours'][today];
@@ -997,17 +1036,30 @@ webot.set('map',{
         };
       }
       if(!closed){
-        output+="    ML的Tim horton's 今天"+ml_open_hour+"开门, "+ml_closing_hour+"关门 \n";
+        output += utils.localizedText(webot, 
+        {
+          'en_us' : "ML Tim horton's open hour: "+ml_open_hour+"  closing hour: "+ml_closing_hour+"\n",
+          'zh_cn' : "ML的Tim horton's 今天"+ml_open_hour+"开门, "+ml_closing_hour+"关门 \n"
+        })
       }
       else{
-        output+="    ML的Tim horton's 今天不开门哦 \n";
+        //output+="SLC的Tim horton's 今天不开门哦 \n";
+        output += utils.localizedText(webot, 
+        {
+          'en_us' : "ML Tim hortons is closed \n",
+          'zh_cn' : "ML的Tim horton's 今天不开门哦 \n"
+        })
       }
 
 
 
   }
   else{
-    output = "营业时间不明,我的朋友";
+    output = utils.localizedText(webot, 
+        {
+          'en_us' : "Sorry! cannot find open hours\n",
+          'zh_cn' : "营业时间不明。。 \n"
+        })
   }
       return output;
     }
@@ -1036,18 +1088,6 @@ webot.set('map',{
   }
       return output;
     }
-  });
-
-  webot.set('speech recognition', {
-    description: '微信语音识别',
-    pattern: function(info) {
-      console.log(info);
-      return info.is('voice') || info.type == 'voice';
-    },
-    handler: function(info, next) {
-      next(null, info.param.recognition);
-    }
-
   });
 
 
@@ -1209,13 +1249,23 @@ function distance(lat1, lon1, lat2, lon2, unit) {
       s += info.param.lng.toString();
        gm.reverseGeocode(s, function(err, data){
         if(data.results.length<1){
-          output = "no such address. I am sorry buddy!";
+          output = utils.localizedText(webot, 
+        {
+          'en_us' : "no such address. I am sorry buddy!",
+          'zh_cn' : '对不起，没有这个地址'
+        })
         }
         else{
           address = data.results[0].formatted_address;
           // log("address: %s", output);
+
           output = "your current location is: "+address+"\n";
           output += "    distance between you and SLC Tim Hortons is: "+ distance_to_slc_tim+" m";
+          output = utils.localizedText(webot, 
+        {
+          'en_us' : "your current location is: "+address+"\n"+" Distance between you and SLC Tim Hortons is: "+ distance_to_slc_tim+" m",
+          'zh_cn' : "您现在所在位置: "+address+"\n"+" 您距离SLC的Tim Hortons的距离是: "+ distance_to_slc_tim+" m"
+        })
         }
           next(null, output);
         });
@@ -1234,7 +1284,6 @@ function distance(lat1, lon1, lat2, lon2, unit) {
     },
     handler: function(info, next){
       verbose('image url: %s', info.param.picUrl);
-
       try{
         var shasum = crypto.createHash('md5');
 
@@ -1278,7 +1327,7 @@ function distance(lat1, lon1, lat2, lon2, unit) {
   webot.set(/.*/, function(info){
     // 利用 error log 收集听不懂的消息，以利于接下来完善规则
     // 你也可以将这些 message 存入数据库
-    console.log('unhandled message: %s', info.param.recognition);
+    log('unhandled message: %s', info.text);
     info.flag = true;
     return '你发送了「' + info.text + '」,可惜我太笨了,听不懂. 发送: help 查看可用的指令';
   });
