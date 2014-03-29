@@ -11,7 +11,7 @@ var package_info = require('../package.json');
 var mongo = require('mongodb');
 var mongoUri = process.env.MONGOLAB_URI || process.env.MONGOHQ_URL||
             'mongodb://y88huang:123456@oceanic.mongohq.com:10087/app23211056';
-var collecions = ["userLanguage"];
+var collecions = ["language"];
 
 //A blocking library enable us to wait for API response
 var httpsync = require('httpsync');
