@@ -19,6 +19,7 @@ var moment = require('moment');
 var moment_timezone =  require('moment-timezone');
 
 var utils = require('../utils/utils.js');
+var redis = require('../utils/redis.js').initialize();
 
 /**
  * 初始化路由规则
@@ -979,6 +980,17 @@ webot.set('map',{
     }
   });
 
+  webot.set('speech recognition', {
+    description: '微信语音识别',
+    pattern: function(info, next) {
+      return info.is('voice');
+    }
+    handler: function(info, next) {
+      next(null, info.param.recognition);
+    }
+
+  });
+
 
   webot.waitRule('wait_suggest_keyword', function(info, next){
     if (!info.text) {
@@ -1206,7 +1218,7 @@ function distance(lat1, lon1, lat2, lon2, unit) {
   webot.set(/.*/, function(info){
     // 利用 error log 收集听不懂的消息，以利于接下来完善规则
     // 你也可以将这些 message 存入数据库
-    log('unhandled message: %s', info.text);
+    console.log('unhandled message: %s', info.raw.Recognition);
     info.flag = true;
     return '你发送了「' + info.text + '」,可惜我太笨了,听不懂. 发送: help 查看可用的指令';
   });
