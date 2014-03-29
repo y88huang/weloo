@@ -6,8 +6,8 @@ module.exports = function(webot) {
   webot.waitRule('wait_course', function(info, next) {
     var invalid_format_reply = utils.localizedText(webot, 
         {
-          'en_us' : 'Invalid format, please enter in this format: cs116 math115 econ101',
-          'zh_cn' : '格式不正确，请仿造以下例子：cs116 math115 econ101'
+          'en_us' : 'Invalid format. Please follow this format: cs116 math115 econ101',
+          'zh_cn' : '格式不正确，请仿照以下例子：cs116 math115 econ101'
         })
     var subjects = info.text.match(/\D+/g);
     var catalogNums = info.text.match(/\d+/g); 
