@@ -1340,11 +1340,16 @@ function distance(lat1, lon1, lat2, lon2, unit) {
   };
 
   //所有消息都无法匹配时的fallback
-  webot.set(/.*/, function(info){
+  webot.set(/.*/, function(info, next){
     // 利用 error log 收集听不懂的消息，以利于接下来完善规则
     // 你也可以将这些 message 存入数据库
     console.log('unhandled message: %s', info.param.recognition);
     info.flag = true;
-    return '你发送了「' + info.text + '」,可惜我太笨了,听不懂. 发送: help 查看可用的指令';
+    var output = '';
+    output = utils.localizedText(webot, {
+      'en_us': 'Sorry, but I don\'t understand "' + info.text + '".',
+      'zh_cn': '你发送了「' + info.text + '」,可惜我太笨了,听不懂. 发送: help 查看可用的指令'
+    });
+    next(null, output);
   });
 };
