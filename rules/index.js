@@ -25,6 +25,8 @@ var utils = require('../utils/utils.js');
  */
 
 module.exports = exports = function(webot){
+  webot.loads('./uwaterloo/terms/exam_schedule');
+
   var reg_help = /^(help|\?)$/i
   webot.set({
     // name 和 description 都不是必须的
@@ -317,7 +319,7 @@ module.exports = exports = function(webot){
 
   webot.set('exam schedule',{
     description:'发送: exam, 查询你的考试时间地点',
-    pattern: /(?:exam|考？试|Exam)\s*(\d*)/,
+    pattern: /(?:exam|考？试|Exam)\s*(\d*)/, //exam|
     handler: function(info){
       var num = 3;
       info.session.course = num;

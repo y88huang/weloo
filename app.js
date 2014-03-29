@@ -1,5 +1,5 @@
 var express = require('express');
-var webot = require('weixin-robot');
+var webot_lib = require('weixin-robot');
 var log = require('debug')('webot-example:log');
 var verbose = require('debug')('webot-example:verbose');
 
@@ -9,25 +9,25 @@ var verbose = require('debug')('webot-example:verbose');
 var app = express();
 
 // 实际使用时，这里填写你在微信公共平台后台填写的 token
-// var wx_token = process.env.WX_TOKEN || 'keyboardcat123';
-// var wx_token2 = process.env.WX_TOKEN_2 || 'weixinToken2';
+// FIXME: remove second token?
 var wx_token = process.env.WX_TOKEN || 'wewaterloo2014';
-var wx_token2 = process.env.WX_TOKEN_2 || 'wewaterloo2014';
-// 建立多个实例，并监听到不同 path ，
-var webot2 = new webot.Webot();
+
+// 建立多个实例，并监听到不同 path, 目前对应不同语言
+var webot_en_us = new webot_lib.Webot({'lang':'en_us'});
+var webot_zh_cn = new webot_lib.Webot({'lang':'zh_cn'});
 
 // 载入webot1的回复规则
-require('./rules')(webot);
+require('./rules')(webot_en_us);
 // 为webot2也指定规则
-webot2.set('hello', 'hi.');
+require('./rules')(webot_zh_cn);
 
 // 启动机器人, 接管 web 服务请求
-webot.watch(app, { token: wx_token, path: '/wechat' });
+webot_en_us.watch(app, { token: wx_token, path: '/wechat_en_us' });
 // 若省略 path 参数，会监听到根目录
 // webot.watch(app, { token: wx_token });
 
 // 后面指定的 path 不可为前面实例的子目录
-webot2.watch(app, { token: wx_token2, path: '/wechat_2' });
+webot_zh_cn.watch(app, { token: wx_token, path: '/wechat_zh_cn' });
 
 // 如果需要 session 支持，sessionStore 必须放在 watch 之后
 app.use(express.cookieParser());
