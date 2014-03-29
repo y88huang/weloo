@@ -1011,6 +1011,7 @@ webot.set('map',{
   webot.set('speech recognition', {
     description: '微信语音识别',
     pattern: function(info) {
+      console.log(info);
       return info.is('voice') || info.type == 'voice';
     },
     handler: function(info, next) {
@@ -1246,7 +1247,7 @@ function distance(lat1, lon1, lat2, lon2, unit) {
   webot.set(/.*/, function(info){
     // 利用 error log 收集听不懂的消息，以利于接下来完善规则
     // 你也可以将这些 message 存入数据库
-    console.log('unhandled message: %s', info.raw.Recognition);
+    console.log('unhandled message: %s', info.param.recognition);
     info.flag = true;
     return '你发送了「' + info.text + '」,可惜我太笨了,听不懂. 发送: help 查看可用的指令';
   });
