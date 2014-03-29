@@ -10,13 +10,20 @@ var search = require('../lib/support').search;
 var geo2loc = require('../lib/support').geo2loc;
 
 var package_info = require('../package.json');
-
+var mongo = require('mongodb');
+var mongoUri = process.env.MONGOLAB_URI || process.env.MONGOHQ_URL||
+            'mongodb://y88huang:123456@oceanic.mongohq.com:10087/app23211056';
+var collecions = ["userLanguage"];
 // var http = require('http');
 var httpsync = require('httpsync');
 var moment = require('moment');
+
+
+
 /**
  * 初始化路由规则
  */
+
 module.exports = exports = function(webot){
   var reg_help = /^(help|\?)$/i
   webot.set({
@@ -27,8 +34,27 @@ module.exports = exports = function(webot){
       //首次关注时,会收到subscribe event
       return info.is('event') && info.param.event === 'subscribe' || reg_help.test(info.text);
     },
-    handler: function(info){
-      var reply = {
+    handler: function(info,next){
+
+  //   {
+      var userName = info.raw.FromUserName;
+      var reply;
+      var database = mongo.connect(mongoUri,collecions,function(err, db) {
+  if(!err) {
+      db.collection("language",function(err,collection){
+        var obj2 = {};
+        obj2[userName] = {$exists:true};
+      collection.find(obj2).toArray(function(err,results){
+        if(results.length==0){
+          console.log(results);
+        var obj = {};
+        obj[userName] = 'English';
+         collection.insert(obj,function(err,cb){});
+         reply = "da sb";
+          return next(null,reply);
+        }
+        else{
+          reply = {
         title: '感谢你关注WeLoo公众平台',
         pic: 'http://i.imgur.com/ySk4ojW.jpg',
         url: 'https://github.com/node-webot',
@@ -48,6 +74,14 @@ module.exports = exports = function(webot){
             'PS: 点击下面的「查看全文」将跳转到github源代码页'
         ].join('\n')
       };
+      return next(null,reply);
+        }
+      })})
+    }});
+
+        
+
+     
       // 返回值如果是list，则回复图文消息列表
       return reply;
     }
@@ -164,6 +198,13 @@ module.exports = exports = function(webot){
     // }]
   });
 
+
+
+//
+//
+// webot.waitRule('select_language', function(info) {
+//   var 
+//   });
   // 定义一个 wait rule
   webot.waitRule('wait_guess', function(info) {
     var r = Number(info.text);
@@ -229,7 +270,10 @@ webot.waitRule('wait_class', function(info) {
     var data = JSON.parse(response['data'].toString('utf-8'))['data'];
     // console.log(data);
     var output = '';
-
+    // mongo.Db.connect(mongoUri, function (err, db) {
+    // db.u
+    // });
+    // });
     if(!isEmptyObject(data)){
     var course = data['course'];
     data = data['sections'][0];
