@@ -1,42 +1,39 @@
+//All dependencies goes here
 var crypto = require('crypto');
-
 var debug = require('debug');
 var log = debug('webot-example:log');
 var verbose = debug('webot-example:verbose');
 var error = debug('webot-example:error');
-
 var _ = require('underscore')._;
 var search = require('../lib/support').search;
 var geo2loc = require('../lib/support').geo2loc;
-
 var package_info = require('../package.json');
 var mongo = require('mongodb');
 var mongoUri = process.env.MONGOLAB_URI || process.env.MONGOHQ_URL||
             'mongodb://y88huang:123456@oceanic.mongohq.com:10087/app23211056';
 var collecions = ["userLanguage"];
-// var http = require('http');
+
+//A blocking library enable us to wait for API response
 var httpsync = require('httpsync');
 var moment = require('moment');
-
+var moment_timezone =  require('moment-timezone');
 
 var utils = require('../utils/utils.js');
-
-// var redis = require('../utils/redis.js').initialize();
-
-// console.log(redis);
 
 /**
  * 初始化路由规则
  */
 
 module.exports = exports = function(webot){
+  webot.loads('./uwaterloo/terms/exam_schedule');
+
   var reg_help = /^(help|\?)$/i
   webot.set({
     // name 和 description 都不是必须的
     name: 'hello help',
     description: '获取使用帮助，发送 help',
     pattern: function(info) {
-      //首次关注时,会收到subscribe event
+      //首次关注时,会收到subscri event
       return info.is('event') && info.param.event === 'subscribe' || reg_help.test(info.text);
     },
     handler: function(info,next){
@@ -125,6 +122,7 @@ module.exports = exports = function(webot){
     handler: '你好,{1}'
   });
 
+  // Simple conversation 
   // 简单的纯文本对话，可以用单独的 yaml 文件来定义
   require('js-yaml');
   webot.dialog(__dirname + '/dialog.yaml');
@@ -152,9 +150,9 @@ module.exports = exports = function(webot){
     description: '想知道几点吗? 发送: time',
     pattern: /^(几点了|time)\??$/i,
     handler: function(info) {
-      var d = new Date();
-      var h = d.getHours();
-      var t = '现在是服务器时间' + h + '点' + d.getMinutes() + '分';
+      var now = moment_timezone().tz('America/Toronto');
+      h = now.hours();
+      var t = '现在是滑铁卢本地时间' + h + '点' + now.minutes() + '分';
       if (h < 4 || h > 22) return t + '，夜深了，早点睡吧 [月亮]';
       if (h < 6) return t + '，您还是再多睡会儿吧';
       if (h < 9) return t + '，又是一个美好的清晨呢，今天准备去哪里玩呢？';
@@ -270,10 +268,8 @@ module.exports = exports = function(webot){
       return '玩玩猜数字的游戏吧, 1~9,选一个';
     }
   });
-
-
-webot.waitRule('wait_class', function(info) {
-       
+  
+  webot.waitRule('wait_class', function(info) {
     var courseName = info.text;
     console.log(courseName);
     var subject = courseName.match(/[^0-9]*/)[0];
@@ -320,9 +316,10 @@ webot.waitRule('wait_class', function(info) {
 
      return output;
   });
+
   webot.set('exam schedule',{
     description:'发送: exam, 查询你的考试时间地点',
-    pattern: /(?:exam|考？试|Exam)\s*(\d*)/,
+    pattern: /(?:exam|考？试|Exam)\s*(\d*)/, //exam|
     handler: function(info){
       var num = 3;
       info.session.course = num;
@@ -430,9 +427,6 @@ webot.waitRule('wait_class', function(info) {
     }
   });
 
-
-
-
   webot.set('current weather',{
     description:'w(weather):查询当前天气,温度等情况',
     pattern: /(?:w|W|Weather|weather|天气)\s*(\d*)/,
@@ -487,6 +481,7 @@ webot.waitRule('wait_class', function(info) {
     // remember to clean your session object.
     delete info.session.last_search_word;
   });
+
   // 调用已有的action
   webot.set('suggest keyword', {
     description: '发送: s nde ,然后再回复Y或其他',
@@ -573,7 +568,6 @@ webot.waitRule('wait_class', function(info) {
       return '你输入了 ' + info.text;
     }
   });
-
 
   //支持location消息 此examples使用的是高德地图的API
   //http://restapi.amap.com/rgeocode/simple?resType=json&encode=utf-8&range=3000&roadnum=0&crossnum=0&poinum=0&retvalue=1&sid=7001&region=113.24%2C23.08
