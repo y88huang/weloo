@@ -311,18 +311,19 @@ module.exports = exports = function(webot){
         if(!err) {
         var userName = info.raw.FromUserName;
         var obj = {};
-        obj[userName] = 'LOL';
-         collection.insert(obj,function(err,cb){});
+          obj[userName] = {$exists:true};
          // info.wait("language");
-         next(null,"已设置您的语言");
+      collection.find(obj).toArray(function(err,results){
+        if(results.length==0){
+          next(null,"wtf?");
         }
         else{
-          next(null,"粗大事了");
+          next(null,"粗大事了,已存在");
         }
+    });
     }
-    )
     });}
-     })
+     )}});
   webot.waitRule('wait_class', function(info) {
     var courseName = info.text;
     console.log(courseName);
