@@ -3,7 +3,7 @@
 ##Team Member:
 ##Elton Gao
 ##Frank Li
-##Team Member: Chao Chen
+##Chao Chen
 # [微信公共帐号机器人](https://github.com/node-webot/weixin-robot)示例 [![Build Status](https://api.travis-ci.org/node-webot/webot-example.png?branch=master)](https://travis-ci.org/node-webot/webot-example)
 
 ## 本地运行
