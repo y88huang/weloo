@@ -1,6 +1,8 @@
+var httpsync = require('httpsync');
+
 module.exports = function(webot) {
   // Exam Command Rule
-  webot.waitRule('wait_course', function(info, next) {
+  webot.waitRule('wait_course', function(info) {
     try {
       var subject = info.text.match(/\D+/)[0];
       var catalogNum = info.text.match(/\d+/)[0];  
@@ -34,7 +36,6 @@ module.exports = function(webot) {
         title: course+'\t'+date+' '+day+'\n'+start+' - '+end, 
         description: result.join('\n')
       };
-      info.rewait();
       return reply;
     }
   });
