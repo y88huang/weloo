@@ -1201,18 +1201,18 @@ function distance(lat1, lon1, lat2, lon2, unit) {
     handler: function(info, next){
       console.log("location checking");
 
-      console.log("lat: " + info.raw.Location_X);
-      console.log("long: " + info.raw.Location_Y);
-      var dis = distance(info.raw.Location_X,info.raw.Location_Y,43.471324,-80.545186,"meter");
+      console.log("lat: " + info.param.lat);
+      console.log("long: " + info.param.lng);
+      var dis = distance(info.param.lat,info.param.lng,43.471324,-80.545186,"meter");
       var gm = require('googlemaps');
       var util = require('util');
       var data;
       var output = "";
       var address = "";
-      var s = info.raw.Location_X.toString();
+      var s = info.param.lat.toString();
       var distance_to_slc_tim = Math.ceil(dis);
       s +=",";
-      s += info.raw.Location_Y.toString();
+      s += info.param.lng.toString();
        gm.reverseGeocode(s, function(err, data){
         if(data.results.length<1){
           output = "no such address. I am sorry buddy!";
@@ -1240,6 +1240,7 @@ function distance(lat1, lon1, lat2, lon2, unit) {
     },
     handler: function(info, next){
       verbose('image url: %s', info.param.picUrl);
+
       try{
         var shasum = crypto.createHash('md5');
 
