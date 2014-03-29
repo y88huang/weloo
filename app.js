@@ -4,17 +4,17 @@ var log = require('debug')('webot-example:log');
 var verbose = require('debug')('webot-example:verbose');
 
 // fine for both Dev and Prod stage
-if (process.env.REDISTOGO_URL) {
-    var rtg   = require("url").parse(process.env.REDISTOGO_URL);
-	var redis = require("redis").createClient(rtg.port, rtg.hostname);
-	redis.auth(rtg.auth.split(":")[1]);
-} else {
-	log("creating redis client...");
-    var redis = require("redis").createClient();
-}
+// if (process.env.REDISTOGO_URL) {
+//     var rtg   = require("url").parse(process.env.REDISTOGO_URL);
+// 	var redis = require("redis").createClient(rtg.port, rtg.hostname);
+// 	redis.auth(rtg.auth.split(":")[1]);
+// } else {
+// 	log("creating redis client...");
+//     var redis = require("redis").createClient();
+// }
 
 
-log("REDISTOGO_URL (will show up as undefined in dev): %s", process.env.REDISTOGO_URL);
+// log("REDISTOGO_URL (will show up as undefined in dev): %s", process.env.REDISTOGO_URL);
 
 
 
