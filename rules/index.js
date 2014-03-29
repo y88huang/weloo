@@ -380,11 +380,6 @@ module.exports = exports = function(webot){
   // });
 
 
-<<<<<<< HEAD
- webot.set('timmis slc',{
-    description:'tim : 查询SLC的timmis营业时间',
-    pattern: /(?:t|tim|T|Tim|TIM|timmis|Timmis)\s*(\d*)/,
-=======
  webot.set('Brubakers slc',{
     description:'Brubakers : 查询slc的Brubakers营业时间',
     pattern: /^(B|b)(ru)|^(B|b)(rubakers)/,//wtf is that
@@ -582,7 +577,6 @@ webot.set('map',{
  webot.set('bon app dc',{
     description:'Bon app : 查询dc的Bon app营业时间',
     pattern: /^(B|b)(on)/,//wtf is that
->>>>>>> modified index.js add distance calculating
     handler: function(info){
       var url="http://api.uwaterloo.ca/v2/foodservices/locations.json?key=b15ec88836fc09518c7407bb3951193c";
         var req = httpsync.get(url);
@@ -590,13 +584,9 @@ webot.set('map',{
     var data = JSON.parse(response['data'].toString('utf-8'))['data'];
     var output = '';
     // console.log(data);
-<<<<<<< HEAD
+
     if(!utils.isEmptyObject(data)){
-      var timmis;
-=======
-    if(!isEmptyObject(data)){
       var browsers;
->>>>>>> modified index.js add distance calculating
       for (var i = data.length - 1; i >= 0; i--) {
         if(data[i]['outlet_id']=="3"){
         browsers = data[i];
