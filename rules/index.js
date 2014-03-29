@@ -128,11 +128,6 @@ module.exports = exports = function(webot){
 
 
 
-
-
-
-
-
   // 更简单地设置一条规则
   webot.set(/^more$/i, function(info){
     var reply = _.chain(webot.gets()).filter(function(rule){
@@ -706,7 +701,7 @@ webot.set('map',{
         };
       }
       if(!closed){
-        output="DC的Bon App 今天"+open_hour+"开门, "+closing_hour+"关门 ";
+        output="DC的Bon App 今天 "+open_hour+" 开门, "+closing_hour+" 关门 ";
       }
       else{
         output="DC的Bon App 今天不开门";
@@ -1013,36 +1008,47 @@ webot.set('map',{
     }
   });
 
+
+
+
   webot.set('current weather',{
     description:'w(weather):查询当前天气,温度等情况',
     pattern: /(?:w|W|Weather|weather|天气)\s*(\d*)/,
-    handler: function(info){
+    handler: function(info, next){
       // console.log(info);
     var url="api.uwaterloo.ca/v2/weather/current.json";
     var req = httpsync.get(url);
     var response= req.end();
     var data = JSON.parse(response['data'].toString('utf-8'))['data'];
-    var output = '';
     // console.log(data);
     if(!utils.isEmptyObject(data)){
     var max = data['temperature_24hr_max_c'];
     var min = data['temperature_24hr_min_c'];
     var hum = data['relative_humidity_percent'];
     var temperature = data['temperature_current_c'];
-    output = output+ "当前温度: "+temperature+"度, 今天最高温度: "+max+ "度 今天最低温度: "+min+ "度 当前湿度: "+hum+"%";
+    var output = utils.localizedText(webot, 
+                {
+                  'en_us' : "Current temperature: "+temperature+"C\nHighest: "+max+ "C\nLowest: "+min+ "C\nCurrent Humidity: "+hum+"%",
+                  'zh_cn' : "当前温度: "+temperature+"度\n 今天最高温度: "+max+ "度\n今天最低温度: "+min+ "度\m当前湿度: "+hum+"%"
+                });
   }
   else{
-    output = "当前温度不明,我的朋友";
+    output = utils.localizedText(
+        webot, {
+          'en_us' : "Something wrong... T_T",
+          'zh_cn' : "天气功能暂时不可用 T_T"
+        }
+      );
   }
-      return output;
+      next(null, output);
     }
   });
 
+// Speech Recognization
   webot.set('speech recognition', {
     description: '微信语音识别',
     pattern: function(info) {
-      console.log(info);
-      return info.is('voice') || info.type == 'voice';
+      return info.is('voice') || info.type === 'voice';
     },
     handler: function(info, next) {
       next(null, info.param.recognition);
