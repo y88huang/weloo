@@ -390,7 +390,7 @@ module.exports = exports = function(webot){
     var data = JSON.parse(response['data'].toString('utf-8'))['data'];
     var output = '';
     // console.log(data);
-    if(!isEmptyObject(data)){
+    if(!utils.isEmptyObject(data)){
       var browsers;
       for (var i = data.length - 1; i >= 0; i--) {
         if(data[i]['outlet_id']=="20"){
@@ -438,7 +438,7 @@ module.exports = exports = function(webot){
 
 
       //Handling special hours case here.
-      if((!isEmptyObject(specialhours))){
+      if((!utils.isEmptyObject(specialhours))){
         // console.log(specialhours);
         var now = moment().format('YYYY-MM-DD');
         for (var i = specialhours.length - 1; i >= 0; i--) {
@@ -496,7 +496,7 @@ webot.set('map',{
     var data = JSON.parse(response['data'].toString('utf-8'))['data'];
     var output = '';
     // console.log(data);
-    if(!isEmptyObject(data)){
+    if(!utils.isEmptyObject(data)){
       var browsers;
       for (var i = data.length - 1; i >= 0; i--) {
         if(data[i]['outlet_id']=="20"){
@@ -544,7 +544,7 @@ webot.set('map',{
 
 
       //Handling special hours case here.
-      if((!isEmptyObject(specialhours))){
+      if((!utils.isEmptyObject(specialhours))){
         // console.log(specialhours);
         var now = moment().format('YYYY-MM-DD');
         for (var i = specialhours.length - 1; i >= 0; i--) {
@@ -633,7 +633,7 @@ webot.set('map',{
 
 
       //Handling special hours case here.
-      if((!isEmptyObject(specialhours))){
+      if((!utils.isEmptyObject(specialhours))){
         // console.log(specialhours);
         var now = moment().format('YYYY-MM-DD');
         for (var i = specialhours.length - 1; i >= 0; i--) {
@@ -672,7 +672,7 @@ webot.set('map',{
     var data = JSON.parse(response['data'].toString('utf-8'))['data'];
     var output = '';
     // console.log(data);
-    if(!isEmptyObject(data)){
+    if(!utils.isEmptyObject(data)){
       var browsers;
       for (var i = data.length - 1; i >= 0; i--) {
         if(data[i]['outlet_id']=="20"){
@@ -757,7 +757,7 @@ webot.set('map',{
     var data = JSON.parse(response['data'].toString('utf-8'))['data'];
     var output = '';
     // console.log(data);
-    if(!isEmptyObject(data)){
+    if(!utils.isEmptyObject(data)){
       var timmis_dcl;
       var timmis_sch;
       var timmis_dc;
@@ -821,7 +821,7 @@ webot.set('map',{
 
 
       //Handling special hours case here.
-      if((!isEmptyObject(slc_specialhours))){
+      if((!utils.isEmptyObject(slc_specialhours))){
         // console.log(specialhours);
         var now = moment().format('YYYY-MM-DD');
         for (var i = slc_specialhours.length - 1; i >= 0; i--) {
@@ -848,7 +848,7 @@ webot.set('map',{
       var dcl_closing_hour = dcl_hours['closing_hour'];
       closed = dcl_hours['is_closed'];
       //Handling special hours case here.
-      if((!isEmptyObject(dcl_specialhours))){
+      if((!utils.isEmptyObject(dcl_specialhours))){
         // console.log(specialhours);
         var now = moment().format('YYYY-MM-DD');
         for (var i = dcl_specialhours.length - 1; i >= 0; i--) {
@@ -875,7 +875,7 @@ webot.set('map',{
       var sch_closing_hour = sch_hours['closing_hour'];
       closed = sch_hours['is_closed'];
       //Handling special hours case here.
-      if((!isEmptyObject(sch_specialhours))){
+      if((!utils.isEmptyObject(sch_specialhours))){
         // console.log(specialhours);
         var now = moment().format('YYYY-MM-DD');
         for (var i = sch_specialhours.length - 1; i >= 0; i--) {
@@ -900,7 +900,7 @@ webot.set('map',{
       var dc_closing_hour = dc_hours['closing_hour'];
       closed = dc_hours['is_closed'];
       //Handling special hours case here.
-      if((!isEmptyObject(dc_specialhours))){
+      if((!utils.isEmptyObject(dc_specialhours))){
         // console.log(specialhours);
         var now = moment().format('YYYY-MM-DD');
         for (var i = dc_specialhours.length - 1; i >= 0; i--) {
@@ -925,7 +925,7 @@ webot.set('map',{
       var ml_closing_hour = ml_hours['closing_hour'];
       closed = ml_hours['is_closed'];
       //Handling special hours case here.
-      if((!isEmptyObject(ml_specialhours))){
+      if((!utils.isEmptyObject(ml_specialhours))){
         // console.log(specialhours);
         var now = moment().format('YYYY-MM-DD');
         for (var i = ml_specialhours.length - 1; i >= 0; i--) {
