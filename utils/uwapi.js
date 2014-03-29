@@ -11,6 +11,7 @@ function UWApi() {
 // class methods
 UWApi.prototype.getjson = function(path, cb) {
 	var url = this.host+path+'.json?key='+this.token;
+	console.info("UWAPI get: "+url);
 	this.rest.get(url).on('complete', function(data) {
       cb(data);
     });
