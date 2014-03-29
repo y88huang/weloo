@@ -107,13 +107,19 @@ module.exports = exports = function(webot){
         var obj = {};
         obj[userName] = lanInfo;
          collection.insert(obj,function(err,cb){});
-         // info.wait("language");
          if(language==1){
-         next(null,"欢迎使用微信公众平台,输入Help获取帮助");
+         webot.config.lang = "zh_cn"
        }
-       else {
-        next(null,"Welcome WeLoo! use 'help' to get more information")
+       else if(language==2){
+         webot.config.lang = "en_us"
        }
+         // info.wait("language");
+         var reply = utils.localizedText(webot, 
+        {
+          'en_us' : 'Welcome WeLoo! use \'help\' to get more information',
+          'zh_cn' : '欢迎使用微信公众平台,输入Help获取帮助'
+        })
+         next(null, reply);
         }
       });
     });
@@ -311,8 +317,16 @@ module.exports = exports = function(webot){
   webot.set('set language',{
     description: '发送: 重新设置语言',
     pattern: /^(l|L)anguage/,
-    handler: function(info,next){
-       var database = mongo.connect(mongoUri,collecions,function(err, db) {
+    handler: function(info){
+      var rep = "1.English, 2.中文";
+      info.wait('reset_lang');
+      return rep;
+    }
+  });
+
+
+  webot.waitRule('reset_lang',function(info,next){
+      var database = mongo.connect(mongoUri,collecions,function(err, db) {
       db.collection("language",function(err,collection){
         if(!err) {
         var userName = info.uid;
@@ -320,16 +334,32 @@ module.exports = exports = function(webot){
           obj[userName] = {$exists:true};
          // info.wait("language");
       collection.find(obj).toArray(function(err,results){
+        var objText={};
+        var command = Number(info.text);
+        if(command==1){
+          command='EN';
+          webot.config.lang = "en_us";
+        }
+        else if(command==2){
+          command='CN';
+          webot.config.lang = "zh_cn";
+        }
+        objText[userName]=command;
         if(results.length==0){
           next(null,"咦？发生了奇怪的事情");
         }
         else{
-          next(null,"Mission Complete!");
+          collection.update(obj,objText,function(err,re){});
+
+          var reply = utils.localizedText(webot, 
+        {
+          'en_us' : 'Welcome WeLoo! use \'help\' to get more information',
+          'zh_cn' : '欢迎使用微信公众平台,输入Help获取帮助'
+        });
+         next(null, reply);
         }
-    });
-    }
-    });}
-     )}});
+      })}})})});
+     
   webot.waitRule('wait_class', function(info) {
     var courseName = info.text;
     console.log(courseName);
