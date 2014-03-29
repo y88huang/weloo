@@ -1080,7 +1080,7 @@ webot.set('map',{
     var output = utils.localizedText(webot, 
                 {
                   'en_us' : "Current temperature: "+temperature+"°C\nHighest: "+max+ "°C\nLowest: "+min+ "°C\nCurrent Humidity: "+hum+"%",
-                  'zh_cn' : "当前温度: "+temperature+"度\n 今天最高温度: "+max+ "度\n今天最低温度: "+min+ "度\m当前湿度: "+hum+"%"
+                  'zh_cn' : "当前温度: "+temperature+"度\n 今天最高温度: "+max+ "度\n今天最低温度: "+min+ "度\n当前湿度: "+hum+"%"
                 });
   }
   else{
