@@ -50,7 +50,7 @@ module.exports = exports = function(webot){
         if(results.length==0){
          reply = "请选择语言 Please choose your language\n1.中文 2.English";
          info.wait("language");
-         return next(null,reply);
+         next(null,reply);
         }
         else{
           reply = {
@@ -68,6 +68,7 @@ module.exports = exports = function(webot){
              'bon: 查询dc的bon app营业时间',
              'coffee: 查询ml的coffee shop营业时间',
              'bru(brubakers): 查询slc的brubakers营业时间',
+             'Language: 重新选择语言',
             // 's+空格+关键词 : 我会帮你百度搜索喔',
             // 's+空格+nde : 可以试试我的纠错能力',
             // '使用「位置」发送你的经纬度',
@@ -77,7 +78,7 @@ module.exports = exports = function(webot){
             'PS: 点击下面的「查看全文」将跳转到github源代码页'
         ].join('\n')
       };
-      return next(null,reply);
+      next(null,reply);
         }
       })})
     }});
@@ -111,7 +112,6 @@ module.exports = exports = function(webot){
       });
     });
   });
-
 
 
 
@@ -301,6 +301,28 @@ module.exports = exports = function(webot){
     }
   });
   
+
+  webot.set('set language',{
+    description: '发送: 重新设置语言',
+    pattern: /^(l|L)anguage/,
+    handler: function(info,next){
+       var database = mongo.connect(mongoUri,collecions,function(err, db) {
+      db.collection("language",function(err,collection){
+        if(!err) {
+        var userName = info.raw.FromUserName;
+        var obj = {};
+        obj[userName] = 'LOL';
+         collection.insert(obj,function(err,cb){});
+         // info.wait("language");
+         next(null,"已设置您的语言");
+        }
+        else{
+          next(null,"粗大事了");
+        }
+    }
+    )
+    });}
+     })
   webot.waitRule('wait_class', function(info) {
     var courseName = info.text;
     console.log(courseName);
