@@ -1011,7 +1011,7 @@ webot.set('map',{
   webot.set('speech recognition', {
     description: '微信语音识别',
     pattern: function(info, next) {
-      return info.is('voice');
+      return info.is('voice') || info.type == 'voice';
     },
     handler: function(info, next) {
       next(null, info.param.recognition);
