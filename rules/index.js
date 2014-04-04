@@ -11,7 +11,7 @@ var package_info = require('../package.json');
 var mongo = require('mongodb');
 var mongoUri = process.env.MONGOLAB_URI || process.env.MONGOHQ_URL||
             'mongodb://y88huang:123456@oceanic.mongohq.com:10087/app23211056';
-var collecions = ["language"];
+var collecions = ["language","restaurant"];
 
 //A blocking library enable us to wait for API response
 var httpsync = require('httpsync');
@@ -538,7 +538,24 @@ webot.set('map',{
     }
   });
 
-
+webot.set('random restaurant',{
+  description:'Random: 随机查询参观',
+  pattern: /(吃啥)/,
+  handler: function(info,next){
+    var database = mongo.connect(mongoUri,collecions,function(err, db){
+         db.collection("restaurant",function(err,collection){
+          // collection.find().toArray(function(err,cb){
+          //   console.log(cb);
+          // });
+          collection.count(function(err,result){
+            var num = Math.floor((Math.random()*result)+1);
+            collection.find({index:num}).toArray(function(err,callback){
+               var name = callback[0]['name'];
+               next(null,"我认为你今天必须得吃"+name+",我的朋友");
+                });});
+          
+        })})}});
+ 
 
  webot.set('coffee shop ml',{
     description:'Coffee Shop : 查询ml的coffee shop营业时间',
