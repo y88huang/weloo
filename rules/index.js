@@ -548,7 +548,7 @@ webot.set('random restaurant',{
           //   console.log(cb);
           // });
           collection.count(function(err,result){
-            var num = Math.floor((Math.random()*result)+1);
+            var num = Math.floor((Math.random()*(result-1)));
             collection.find({index:num}).toArray(function(err,callback){
                var name = callback[0]['name'];
                next(null,"我认为你今天必须得吃"+name+",我的朋友");
